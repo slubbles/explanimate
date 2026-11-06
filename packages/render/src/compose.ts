@@ -211,7 +211,7 @@ class Builder {
       color: o.color,
       anchor: o.anchor ?? "start",
       t0: o.t0,
-      dur: o.dur ?? Math.min(0.9, 0.25 + o.text.length * 0.025),
+      dur: o.dur ?? Math.min(1.0, 0.4 + o.text.length * 0.025),
       g: o.g,
       bg: o.bg ? this.theme.background : undefined,
       font: o.font,

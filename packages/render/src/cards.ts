@@ -15,7 +15,7 @@ export type CardKind = (typeof CARD_KINDS)[number];
 export const isCardKind = (v: string): v is CardKind => (CARD_KINDS as readonly string[]).includes(v);
 
 /** Shortest and longest time a card holds the screen, and the dip that hides each cut. */
-export const CARD = { min: 1.2, max: 4.5, fade: 0.18, gapY: 1400, top: 20000 };
+export const CARD = { min: 2.0, max: 4.5, fade: 0.3, gapY: 1400, top: 20000 };
 
 /** What a card needs from the film builder. */
 export interface Pen {
@@ -75,8 +75,9 @@ export function saidAt(words: WordTiming[], phrase: string, from = 0): number {
 
 /**
  * When each card line is on screen in one scene: from its anchor words to the start of the next line,
- * held 1.2 to 4.5 s, never before `from` (the hook's title card), never past the scene's end, never
- * overlapping the card before it. Lines whose anchor the voice never says get no card.
+ * held 2 to 4.5 s, never before `from` (the hook's title card), never past the scene's end, never
+ * overlapping the card before it. Lines whose anchor the voice never says get no card. A line too
+ * close to the next to hold two seconds gets no card: the board holds instead of a flash.
  */
 export function cardSlots(scene: string, beats: Beat[], words: WordTiming[], from: number, end: number): CardSlot[] {
   const out: CardSlot[] = [];

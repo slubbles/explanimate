@@ -18,7 +18,7 @@ export const DEFAULT_TEMPO: TempoLimits = { id: "steady", minBeat: 4.0, maxCutsP
 /** Smallest on-screen height, in pixels of a 1080p frame, for a box's name in a resting shot. */
 export const MIN_LABEL_PX = 26;
 /** Longest a too-wide overview may rest before the camera moves in to a readable framing. */
-export const OVERVIEW_S = 0.7;
+export const OVERVIEW_S = 1.0;
 /** Widest view (world units) in which a box's name is still MIN_LABEL_PX tall on screen. */
 export const readableWidth = (film: { width: number; height: number }) => (NODE.kwSize * film.width * film.height) / (1080 * MIN_LABEL_PX);
 
