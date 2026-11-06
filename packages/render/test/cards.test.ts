@@ -63,8 +63,8 @@ sc("s08-notes").beats = [beat(L("s08-notes")[0], "board"), beat(L("s08-notes")[1
 const spec = specFromBrief(DEFAULT_BRIEF),
   pack = loadIconPack();
 
-test("a card holds its line: from its anchor to the next line, 1.2 to 4.5 s, never before the title card", () => {
-  const ws = "one two three four. five six seven eight nine.".split(" ").map((w, i) => ({ word: w, start: i * 0.5, end: i * 0.5 + 0.4 }));
+test("a card holds its line: from its anchor to the next line, 2 to 4.5 s, never before the title card", () => {
+  const ws = "one two three four. five six seven eight nine.".split(" ").map((w, i) => ({ word: w, start: i * 0.7, end: i * 0.7 + 0.4 }));
   const b = [
     beat("one two three four.", "kinetic", { text: "one two three four" }),
     beat("five six seven eight nine.", "terminal", { text: "ls" }),
@@ -74,7 +74,7 @@ test("a card holds its line: from its anchor to the next line, 1.2 to 4.5 s, nev
   assert.equal(s[0].t0, 0);
   // back-to-back card lines cut straight from one card to the next
   assert.equal(s[0].t1, s[1].t0);
-  assert.ok(Math.abs(s[1].t0 - 1.88) < 1e-9 && s[1].t1 <= 10 && s[1].t1 - s[1].t0 <= CARD.max);
+  assert.ok(Math.abs(s[1].t0 - 2.68) < 1e-9 && s[1].t1 <= 10 && s[1].t1 - s[1].t0 <= CARD.max);
   const late = cardSlots("x", b as any, ws, 1.5, 10);
   assert.deepEqual(
     late.map((x) => x.beat.visual),
@@ -82,6 +82,17 @@ test("a card holds its line: from its anchor to the next line, 1.2 to 4.5 s, nev
     "a line said before cards may cut in is left to the board",
   );
   assert.equal(cardSlots("x", [beat("ten eleven.", "kinetic")] as any, ws, 0, 10).length, 0, "a line the voice never says gets no card");
+});
+
+test("no card flashes by: every slot holds at least two seconds, even when its lines come fast", () => {
+  const ws = "one two three four. five six seven eight.".split(" ").map((w, i) => ({ word: w, start: i * 0.4, end: i * 0.4 + 0.3 }));
+  const b = [
+    beat("one two three four.", "kinetic", { text: "one two three four" }),
+    beat("five six seven eight.", "terminal", { text: "ls" }),
+  ];
+  const s = cardSlots("x", b as any, ws, 0, 10);
+  assert.ok(s.length >= 1, "at least the opening card survives");
+  for (const c of s) assert.ok(c.t1 - c.t0 >= 2.0 - 1e-9, `card holds ${c.t1 - c.t0}s, under two seconds`);
 });
 
 test("line cards cut in over the board and back, keep clear of the heading, and fit their frame", async () => {
