@@ -27,7 +27,8 @@ pnpm typecheck
 pnpm test
 ```
 
-CI runs the same checks plus the web build on every push and PR.
+CI runs the same checks plus the web build and the Playwright browser tests
+(`pnpm test:e2e`, `pnpm test:e2e:auth`, after a build) on every push and PR.
 
 ## Commits and PRs
 

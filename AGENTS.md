@@ -104,7 +104,9 @@ pnpm --filter @explanimate/web build
 ```
 
 CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs lint,
-format:check, typecheck, tests, and the web build on every push and PR.
+format:check, typecheck, tests, the web build, and the Playwright browser tests
+(`pnpm test:e2e`, `pnpm test:e2e:auth`, which use a stand-in pipeline and cost
+nothing) on every push and PR. The required check on `main` is `check`.
 The tests need `ffmpeg` and Chrome but no API keys. The Skia tests need the
 `@napi-rs/canvas` native module; CI installs it.
 

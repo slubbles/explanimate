@@ -8,6 +8,7 @@
 **/node_modules
 **/.next
 **/dist
+explanimate-out
 explainlike-out
 .explainlike-cache
 jobs
