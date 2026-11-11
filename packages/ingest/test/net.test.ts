@@ -19,9 +19,24 @@ test("private, loopback, link-local and metadata addresses are spotted, public o
     "fe80::1",
     "::ffff:127.0.0.1",
     "::ffff:7f00:1",
+    "192.0.0.1",
+    "192.0.0.170",
+    "192.0.2.1",
+    "198.51.100.7",
+    "203.0.113.9",
+    "198.18.0.1",
   ])
     assert.ok(privateAddress(ip), ip);
   for (const ip of ["8.8.8.8", "140.82.112.3", "172.32.0.1", "2606:4700::1111"]) assert.ok(!privateAddress(ip), ip);
+});
+
+test("192.0.0.0/16 is public outside its two reserved /24s, so WordPress.com sites can be read (#108)", () => {
+  // WordPress.com and its hosted blogs resolve into Automattic's 192.0.78.0/24
+  for (const ip of ["192.0.78.9", "192.0.78.17", "192.0.78.24", "192.0.1.1", "192.0.3.1", "192.0.255.255", "::ffff:192.0.78.9"])
+    assert.ok(!privateAddress(ip), ip);
+  // the two anycast addresses IANA marks globally reachable inside 192.0.0.0/24
+  for (const ip of ["192.0.0.9", "192.0.0.10"]) assert.ok(!privateAddress(ip), ip);
+  for (const ip of ["192.0.0.0", "192.0.0.8", "192.0.0.11", "192.0.0.255", "192.0.2.0", "192.0.2.255"]) assert.ok(privateAddress(ip), ip);
 });
 
 test("a link to the server's own network is refused before any request", async () => {

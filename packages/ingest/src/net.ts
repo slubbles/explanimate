@@ -8,11 +8,16 @@ import net from "node:net";
 
 export class PrivateAddressError extends Error {}
 
-/** Loopback, private, link-local, carrier-grade NAT, multicast and other non-public ranges, IPv4 and IPv6. */
+/**
+ * Loopback, private, link-local, carrier-grade NAT, multicast and other non-public ranges, IPv4 and IPv6.
+ * In 192.0.0.0/16 only two /24s are reserved: 192.0.0.0/24 (IETF protocol assignments, minus the globally
+ * reachable anycast 192.0.0.9 and 192.0.0.10, per the IANA special-purpose registry) and 192.0.2.0/24
+ * (TEST-NET-1). The rest is public, WordPress.com among it (192.0.78.0/24).
+ */
 export function privateAddress(ip: string): boolean {
   const v4 = ip.replace(/^::ffff:/i, "");
   if (net.isIPv4(v4)) {
-    const [a, b] = v4.split(".").map(Number) as [number, number];
+    const [a, b, c, d] = v4.split(".").map(Number) as [number, number, number, number];
     return (
       a === 0 ||
       a === 10 ||
@@ -22,7 +27,9 @@ export function privateAddress(ip: string): boolean {
       (a === 172 && b >= 16 && b <= 31) ||
       (a === 192 && b === 168) ||
       (a === 100 && b >= 64 && b <= 127) ||
-      (a === 192 && b === 0) ||
+      (a === 192 && b === 0 && ((c === 0 && d !== 9 && d !== 10) || c === 2)) ||
+      (a === 198 && b === 51 && c === 100) ||
+      (a === 203 && b === 0 && c === 113) ||
       (a === 198 && (b === 18 || b === 19))
     );
   }
