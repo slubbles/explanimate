@@ -164,6 +164,25 @@ for (const width of WIDTHS) {
   });
 }
 
+for (const width of [768, 390]) {
+  test(`every list action is on screen at ${width}px, with no sideways scroll inside the table`, async ({ page, baseURL }) => {
+    const email = uniqueEmail();
+    await signIn(page.request, baseURL!, email, uniqueIp());
+    const created = await createVideo(page.request, baseURL!, "how narrow lists work", uniqueIp());
+    expect(created.ok()).toBe(true);
+    const { id } = (await created.json()) as { id: string };
+    await waitForDone(page.request, id, uniqueIp());
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/app/videos");
+    const row = page.locator("tbody tr", { hasText: "A stand-in explainer" });
+    await expect(row).toBeVisible();
+    for (const name of ["Open", "Follow-up"]) await expect(row.getByRole("link", { name, exact: true })).toBeInViewport({ ratio: 1 });
+    await expect(row.getByRole("button", { name: "Delete" })).toBeInViewport({ ratio: 1 });
+    const hidden = await page.locator(".app-tscroll").evaluate((el) => el.scrollWidth - el.clientWidth);
+    expect(hidden).toBeLessThanOrEqual(1);
+  });
+}
+
 test("the sidebar becomes a drawer on phones", async ({ page, baseURL }) => {
   const email = uniqueEmail();
   await signIn(page.request, baseURL!, email, uniqueIp());

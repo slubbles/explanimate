@@ -158,6 +158,17 @@ a.app-thumb:hover { border-color: rgba(255, 255, 255, 0.3); }
   .app-h1 { font-size: 24px; }
   .app-vcell .app-thumb { width: 96px; }
 }
+/* below 900px the list table stacks each video into a card, so every action sits on screen without sideways scroll */
+@media (max-width: 900px) {
+  .app-tscroll { overflow-x: visible; }
+  .app-table, .app-table tbody { display: block; min-width: 0; }
+  .app-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .app-table tr { display: flex; flex-wrap: wrap; align-items: center; column-gap: 14px; row-gap: 8px; padding: 14px 16px; border-bottom: 1px solid #161616; }
+  .app-table tr:last-child { border: 0; }
+  .app-table td { display: block; padding: 0; border: 0; }
+  .app-table td:first-child, .app-table td:last-child { flex: 1 0 100%; }
+  .app-acts { justify-content: flex-start; }
+}
 @media (max-width: 520px) {
   .app-recent { grid-template-columns: minmax(0, 1fr); }
   .app-row .k { width: 100%; }
