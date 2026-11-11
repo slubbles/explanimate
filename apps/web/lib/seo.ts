@@ -88,8 +88,8 @@ const clean = (s: string) => s.replace(/\s+/g, " ").trim();
 const cut = (s: string, max: number) => (s.length <= max ? s : `${s.slice(0, max - 1).trimEnd()}…`);
 
 /**
- * A shared result link (/?job=<id>) reads as its own page — its own title, description, canonical
- * and unfurl — but stays out of search: jobs are transient and unbounded.
+ * A shared result link (/?job=<id>) reads as its own page (its own title, description, canonical
+ * and unfurl) but stays out of search: jobs are transient and unbounded.
  */
 export function jobPageMetadata(job: JobSummary): Metadata {
   const name = clean(job.title || job.input || "whiteboard explainer");

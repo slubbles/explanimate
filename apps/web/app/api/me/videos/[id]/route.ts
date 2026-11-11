@@ -13,8 +13,8 @@ export const runtime = "nodejs";
 
 /**
  * Delete one of the signed-in account's videos: its job folder and its videos row
- * (lib/videos.ts checks ownership). Anything else — auth off, a bad id, or someone else's
- * video — answers 404, so one account cannot probe another's ids.
+ * (lib/videos.ts checks ownership). Anything else (auth off, a bad id, or someone else's
+ * video) answers 404, so one account cannot probe another's ids.
  */
 export const DELETE = withErrors("me-video.DELETE", async (req: Request, ctx: { params: Promise<{ id: string }> }) => {
   const crossSite = checkOrigin(req);
