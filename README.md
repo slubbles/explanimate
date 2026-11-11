@@ -44,7 +44,7 @@ More detail: [docs/architecture.md](docs/architecture.md).
 
 ## Built with Meta Muse models
 
-Models are called through the Meta Model API, with OpenRouter as a backup for Muse Spark. See [`packages/models/src/index.ts`](packages/models/src/index.ts).
+Muse Spark (the planning and chat calls) goes through OpenRouter when `OPENROUTER_API_KEY` is set, and the Meta Model API otherwise; `EXPLANIMATE_LLM_PROVIDER` picks one explicitly. Images, SAM and the voiceover check always use the Meta Model API. See [`packages/models/src/index.ts`](packages/models/src/index.ts).
 
 | Model                       | What it does                                                                                                          |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------- |

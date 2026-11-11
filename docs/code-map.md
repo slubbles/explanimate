@@ -20,8 +20,9 @@ flowchart LR
 ```
 
 The web app is a thin shell: it stores one JSON file per job on disk, spawns `node packages/cli/bin/explanimate.mjs`
-as a child process, and polls that JSON. All the work is in the CLI and the four packages under it.
-There is no database. Up to `EXPLANIMATE_MAX_CONCURRENT` renders (default 10) run at once; past that, jobs wait
+as a child process, and polls that JSON. All the work is in the CLI and the packages under it.
+Jobs need no database: each one is a JSON file. Accounts are the exception: when sign-in is on, users,
+sessions and per-day usage live in Cloudflare D1, reached over its REST API (`lib/db.ts`). Up to `EXPLANIMATE_MAX_CONCURRENT` renders (default 10) run at once; past that, jobs wait
 in a first-in, first-out line stored in `queue.json` next to the jobs, and their page shows the first step as starting soon.
 
 ## Packages
@@ -29,14 +30,17 @@ in a first-in, first-out line stored in `queue.json` next to the jobs, and their
 | Package            | Lines | What it owns                                                                                                                                                                                                                                                  |
 | ------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/cli`     | 1.2k  | `pipeline.ts` runs one video start to finish, in order, and writes `manifest.json`. `bin.ts` is the argument parser and progress emitter.                                                                                                                     |
-| `packages/core`    | 2.0k  | Shared contracts (`ExplainSpec`, `ScenePlan`, `Architecture`, `Film`), the validators that read narration, the repo digest, URL fetching, plan cache keys. No I/O beyond HTTP and git.                                                                        |
-| `packages/planner` | 1.9k  | Four Muse calls that decide how to explain: `brief` picks analogy, depth, tempo, look; `architecture` finds the components and one request path; `scenes` writes the narration and the boards; `followups` makes the 15 s deep-dive and the what-if-10x clip. |
-| `packages/voice`   | 0.6k  | Per-scene speech through Deepgram Aura (Cartesia Sonic when Deepgram fails), word timings, the respelling table for words Aura mispronounces, and the silent fallback when there is no key.                                                                   |
-| `packages/render`  | 3.9k  | The picture: layout, drawing, camera, captions, music and sound effects, `.tldr`/`.excalidraw` writers, the placement and frame checks, and frames (Skia by default, Chrome fallback) into ffmpeg.                                                            |
+| `packages/core`    | 2.5k  | Shared contracts (`ExplainSpec`, `ScenePlan`, `Architecture`, `Film`), the validators that read narration, HTTP and rate-limit helpers, the early private-link check, plan cache keys. No I/O beyond HTTP and git.                                            |
+| `packages/planner` | 4.5k  | Four Muse calls that decide how to explain: `brief` picks analogy, depth, tempo, look; `architecture` finds the components and one request path; `scenes` writes the narration and the boards; `followups` makes the 15 s deep-dive and the what-if-10x clip. |
+| `packages/voice`   | 0.5k  | Per-scene speech through Deepgram Aura (Cartesia Sonic when Deepgram fails), word timings, the respelling table for words Aura mispronounces, and the silent fallback when there is no key.                                                                   |
+| `packages/render`  | 7.9k  | The picture: layout, drawing, camera, captions, music and sound effects, `.tldr`/`.excalidraw` writers, the placement and frame checks, and frames (Skia by default, Chrome fallback) into ffmpeg.                                                            |
 | `packages/models`  | 0.4k  | One client for Muse Spark (on OpenRouter or Meta, picked by `llmProvider`; OpenRouter backs up Meta), Meta Muse image, SAM and Transcribe, and Deepgram, with the cost ledger and retries.                                                                    |
-| `apps/web`         | 1.9k  | The UI, six job routes, the example gallery (`lib/gallery.ts`, read from `EXPLANIMATE_GALLERY_DIR`), the voice loop, the spend guard, rate limits, health.                                                                                                    |
+| `apps/web`         | 12.2k | The UI, the signed-in dashboard (`/app`) and sign-in, the job routes, the example gallery (`lib/gallery.ts`, read from `EXPLANIMATE_GALLERY_DIR`), the voice loop, the spend guard, rate limits, health.                                                      |
+| `packages/ingest`  | 1.4k  | Reading the source: repo clone and digest, articles, X posts, topics and the pages they cite, the private-address guard and the secret-file filter.                                                                                                           |
+| `packages/api`     | 0.5k  | The local job API on 127.0.0.1:7311 (`/v1/jobs`); it spawns the CLI for each job.                                                                                                                                                                             |
+| `packages/mcp`     | 0.3k  | The MCP connector (`explain`, `explain_status`, `explain_cancel`) on top of the local job API.                                                                                                                                                                |
 
-Two other packages carry the packs and the API/MCP surface; they are not on the demo path.
+Line counts are approximate (source files only, tests excluded).
 
 ## Folder and file map
 
@@ -52,14 +56,14 @@ explanimate/
 ├── apps/web/                 ── WEB APP (Next.js, a React web framework)
 │   ├── app/page.tsx          home page: paste a link, or press the mic
 │   ├── app/gallery/page.tsx  /gallery: finished example videos
-│   ├── components/           screens: InputScreen, Steps (progress), Player, ResultView, VoiceMode, GalleryGrid, Nav
+│   ├── components/           screens: Home, InputScreen, Steps (progress), Player, ResultView, VoiceMode, GalleryGrid, Nav, SignIn
 │   ├── app/api/jobs/...      start a video, check progress, fetch files, explain a box, follow-up clips
 │   ├── app/api/voice/...     voice-mode chat: speak, listen, take a turn (localhost only)
 │   ├── app/api/health        says whether the machine can make a video right now
 │   ├── app/app/...             /app: the signed-in dashboard (overview, editor, videos, connect, usage, settings)
 │   ├── app/api/me/...          the account's videos (list, delete) and account deletion
 │   ├── lib/videos.ts           one account's videos joined with live jobs, ownership-checked deletes
-│   ├── lib/jobs.ts           the job store and the silent queue (one JSON file per job, no database)
+│   ├── lib/jobs.ts           the job store and the silent queue (one JSON file per job)
 │   ├── lib/guard.ts          spend guard: pauses new work before a spend cap is crossed
 │   ├── lib/serve.ts, validate.ts, reach.ts   rate limits, input checks, private-address blocking
 │   ├── lib/gallery.ts        reads the gallery folder and its gallery.json
@@ -115,9 +119,11 @@ explanimate/
 │   └── src/server.ts         tools explain / explain_status / explain_cancel, plus the /explanimate command
 │
 ├── examples/packs/supabase/  sample icon pack (see docs/plugins.md)
-├── scripts/                  check-secrets.sh (pre-commit secret scan), gen-icon-pack.ts
+├── scripts/                  check-secrets.sh (pre-commit secret scan), gen-icon-pack.ts, set-user-limit.ts, loadtest.mjs
 ├── Dockerfile, .dockerignore DOCKER: one image with Node, Chromium, ffmpeg, git; data on a /data volume
-├── .github/workflows/ci.yml  CI: typecheck, tests and web build on every push and PR
+├── .github/workflows/ci.yml  CI: lint, format, typecheck, tests, web build and browser tests on every push and PR
+├── .github/workflows/deploy.yml  deploys main after green CI, off until DEPLOY_ENABLED is set (see docs/deploy.md)
+├── e2e/                      Playwright browser tests with a stand-in pipeline (no keys, no cost)
 │
 └── docs/
     ├── code-map.md           this file: how the code fits together

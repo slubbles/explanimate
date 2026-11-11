@@ -16,10 +16,10 @@ The code is a pnpm workspace: `packages/` holds `core`, `models`, `ingest`, `pla
 
 ```mermaid
 flowchart TD
-    CLI["cli: pipeline"] --> ING["ingest: repos, posts, articles, topics"]
-    WEB["apps/web: Next.js + voice mode"] --> API["api: local job server"]
-    MCP["mcp: /explanimate server"] --> API
-    API --> ING
+    WEB["apps/web: Next.js + voice mode"] -->|spawns| CLI["cli: pipeline"]
+    MCP["mcp: /explanimate server"] --> API["api: local job server"]
+    API -->|spawns| CLI
+    CLI --> ING["ingest: repos, posts, articles, topics"]
     ING --> PLAN["planner: brief, architecture, scenes"]
     PLAN --> VOICE["voice: Deepgram TTS + retake checks"]
     VOICE --> REN["render: hand-drawn canvas, Chrome frames, ffmpeg"]
