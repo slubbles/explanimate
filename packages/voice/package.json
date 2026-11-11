@@ -8,7 +8,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@explanimate/core": "workspace:*",
-    "@explanimate/models": "workspace:*"
+    "@explanimate/core": "workspace:*"
   }
 }

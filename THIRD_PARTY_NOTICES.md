@@ -26,7 +26,6 @@ Inter is the upstream web build (`InterVariable.woff2` from the v4.1 release), u
 | perfect-freehand         | MIT        | marker-pen strokes that swell and thin                     |
 | elkjs                    | EPL-2.0    | graph layout                                               |
 | opentype.js              | MIT        | glyph outlines for handwriting text                        |
-| esbuild                  | MIT        | bundles the stage script                                   |
 | playwright-core          | Apache-2.0 | headless Chrome frame capture, screenshots                 |
 | sharp                    | Apache-2.0 | image processing                                           |
 | zod                      | MIT        | schemas                                                    |

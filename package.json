@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@explanimate/core": "workspace:^",
     "@explanimate/models": "workspace:^",
     "@explanimate/render": "workspace:^",
     "@playwright/test": "^1.64.1",
