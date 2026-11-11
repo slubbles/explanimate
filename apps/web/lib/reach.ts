@@ -1,7 +1,7 @@
 import { execFile } from "node:child_process";
 
 /** Edit distance between two names, ignoring case and dashes (speech blurs both). */
-export function distance(a: string, b: string): number {
+function distance(a: string, b: string): number {
   const x = a.toLowerCase().replace(/[-_.\s]/g, ""),
     y = b.toLowerCase().replace(/[-_.\s]/g, "");
   let prev = Array.from({ length: y.length + 1 }, (_, j) => j);

@@ -35,7 +35,7 @@ interface Word {
 }
 
 /** The TTF files for the film's fonts: the hand font is whichever bundled font the film embeds. */
-export function skiaFonts(film: Film): { hand: string; sans: string } {
+function skiaFonts(film: Film): { hand: string; sans: string } {
   const sans = path.join(FONT_DIR, "Nunito-Variable.ttf");
   const data = film.fonts?.hand ?? "";
   for (const f of Object.values(HAND_FONTS)) {
@@ -46,7 +46,7 @@ export function skiaFonts(film: Film): { hand: string; sans: string } {
 }
 
 /** Open the stage once in Chrome: the caption report the frame check relies on, and the text layout. */
-export async function probeStage(film: Film, html: string): Promise<{ captions: CaptionSpot[]; layout: SkiaLayout }> {
+async function probeStage(film: Film, html: string): Promise<{ captions: CaptionSpot[]; layout: SkiaLayout }> {
   const browser = await chromium.launch({ executablePath: findChrome(), args: chromiumArgs() });
   try {
     const page = await browser.newPage({ viewport: { width: film.width, height: film.height }, deviceScaleFactor: 1 });

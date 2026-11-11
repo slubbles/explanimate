@@ -45,7 +45,7 @@ export const TYPES: Record<string, string> = {
   webp: "image/webp",
 };
 
-export const galleryDir = () => process.env.EXPLANIMATE_GALLERY_DIR?.trim() || undefined;
+const galleryDir = () => process.env.EXPLANIMATE_GALLERY_DIR?.trim() || undefined;
 
 const str = (v: unknown, max = 200) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : undefined);
 const inside = (dir: string, name: string) => {
@@ -92,7 +92,7 @@ export function loadGallery(dir = galleryDir()): GalleryVideo[] {
   return out;
 }
 
-export const galleryUrl = (name: string) => `/api/gallery/${encodeURIComponent(name)}`;
+const galleryUrl = (name: string) => `/api/gallery/${encodeURIComponent(name)}`;
 export const galleryCaptionsUrl = (id: string) => `/api/gallery/captions/${encodeURIComponent(id)}`;
 
 /**

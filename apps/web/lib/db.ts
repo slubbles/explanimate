@@ -434,7 +434,7 @@ export class D1RestDialect implements Dialect {
  * (SQLITE_AUTH, code 7500) for its internal `_cf_*` tables, which broke Better Auth's
  * migrations. This one skips those tables and reads the rest the same way.
  */
-export class D1RestIntrospector implements DatabaseIntrospector {
+class D1RestIntrospector implements DatabaseIntrospector {
   private db: Kysely<any>;
   private base: SqliteIntrospector;
   constructor(db: Kysely<any>) {

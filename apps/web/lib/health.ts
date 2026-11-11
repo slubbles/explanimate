@@ -43,7 +43,7 @@ export interface Probe {
   writable: (dir: string) => boolean;
 }
 
-export const realProbe: Probe = {
+const realProbe: Probe = {
   env: process.env,
   has: (f) => fs.existsSync(/*turbopackIgnore: true*/ f),
   runs: (cmd) => spawnSync(cmd, ["-version"], { stdio: "ignore", timeout: 5000 }).status === 0,

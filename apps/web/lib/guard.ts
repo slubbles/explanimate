@@ -44,9 +44,9 @@ export function limitRequest(
 /** Per-IP limit for job status reads (EXPLANIMATE_POLL_PER_MIN, default 240): the progress page polls once a second, and a few tabs share one IP. */
 export const pollPerMin = () => Number(process.env.EXPLANIMATE_POLL_PER_MIN ?? 240);
 
-export const MAX_BODY_BYTES = 16 * 1024;
+const MAX_BODY_BYTES = 16 * 1024;
 export const MAX_INPUT_CHARS = 2048;
-export const MAX_FIELD_CHARS = 300;
+const MAX_FIELD_CHARS = 300;
 
 /** Read a JSON body of at most MAX_BODY_BYTES; anything larger or unparsable is refused with a plain message. */
 export async function readBody(req: Request, max = MAX_BODY_BYTES): Promise<{ body: Record<string, unknown> } | { error: Response }> {
@@ -90,7 +90,7 @@ export const reserve = (): Spend => ({
   voice: Number(process.env.EXPLANIMATE_VOICE_RESERVE_USD ?? 0.15),
 });
 /** share of a cap at which a warning goes out */
-export const WARN_AT = 0.8;
+const WARN_AT = 0.8;
 
 const ledgerFile = (dir: string) => path.join(dir, "spend.jsonl");
 
@@ -145,8 +145,8 @@ export function budget(s: Spend, c = caps(), r = reserve()): Budget {
 
 // ---- global daily spend guard (works whether sign-in is on or off) ----
 
-export const DEFAULT_DAILY_CAP_USD = 3;
-export const DAILY_BUDGET_ERROR = "Today's budget is used up, new videos are paused until 00:00 UTC.";
+const DEFAULT_DAILY_CAP_USD = 3;
+const DAILY_BUDGET_ERROR = "Today's budget is used up, new videos are paused until 00:00 UTC.";
 
 const utcDay = (ts: number) => new Date(ts).toISOString().slice(0, 10);
 

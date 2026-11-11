@@ -6,7 +6,7 @@
  */
 import { ensureTables, getD1Db, type D1Db } from "./db";
 
-export const DEFAULT_DAILY_VIDEOS = 3;
+const DEFAULT_DAILY_VIDEOS = 3;
 
 /** Our tables exist before any count is read (once per process; a failure retries on the next call). */
 let ready: Promise<void> | undefined;
@@ -32,7 +32,7 @@ export function defaultDailyVideos(): number {
  * Whether an address skips the daily per-account cap (the admin list, case-insensitive).
  * Mirrors admin.ts without importing it (admin.ts imports usage.ts).
  */
-export function isUnlimitedEmail(email: string | null | undefined): boolean {
+function isUnlimitedEmail(email: string | null | undefined): boolean {
   if (!email) return false;
   const list = (process.env.EXPLANIMATE_ADMIN_EMAILS || process.env.ADMIN_EMAILS || "")
     .split(",")

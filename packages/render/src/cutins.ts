@@ -97,7 +97,7 @@ export interface MapLayout {
 }
 
 /** Clip a ring to the panel (Sutherland-Hodgman against each edge), so no coastline spills past the card. */
-export function clipRing(r: [number, number][], w: number, h: number): [number, number][] {
+function clipRing(r: [number, number][], w: number, h: number): [number, number][] {
   const edges: [(p: [number, number]) => boolean, (a: [number, number], b: [number, number]) => [number, number]][] = [
     [(p) => p[0] >= 0, (a, b) => [0, a[1] + ((b[1] - a[1]) * (0 - a[0])) / (b[0] - a[0])]],
     [(p) => p[0] <= w, (a, b) => [w, a[1] + ((b[1] - a[1]) * (w - a[0])) / (b[0] - a[0])]],

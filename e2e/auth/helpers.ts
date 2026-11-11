@@ -4,7 +4,7 @@ import path from "node:path";
 import type { APIRequestContext } from "@playwright/test";
 
 /** Cloudflare's documented dummy token, accepted with the test secret (see lib/turnstile.ts). */
-export const DUMMY_TOKEN = "XXXX.DUMMY.TOKEN.XXXX";
+const DUMMY_TOKEN = "XXXX.DUMMY.TOKEN.XXXX";
 
 export const tmpRoot = (port: number) => path.join(os.tmpdir(), `explanimate-e2e-${port}`);
 export const mailDir = (port: number) => path.join(tmpRoot(port), "mail");

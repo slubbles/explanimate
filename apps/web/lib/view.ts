@@ -33,13 +33,13 @@ export function publicJob(job: Job, viewer?: string) {
 }
 
 /** A follow-up clip as the parent's result page lists it: no input, cost or file names. */
-export const clipRow = (j: Job) => {
+const clipRow = (j: Job) => {
   const s = asSeen(j);
   return { id: s.id, kind: s.kind, parent: s.parent, focus: s.focus, whatIf: s.whatIf, state: s.state, title: s.title, started: s.started };
 };
 
 /** One of the viewer's own jobs in their list. */
-export const ownRow = (j: Job) => {
+const ownRow = (j: Job) => {
   const s = asSeen(j);
   return {
     ...clipRow(j),

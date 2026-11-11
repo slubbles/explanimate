@@ -26,7 +26,7 @@ export const ERROR_KEEP_MS = 14 * 24 * 3600_000;
 
 /** Our tables exist before any error is stored (once per process; a failure retries on the next call). */
 let ready: Promise<void> | undefined;
-export function ensureErrorTables(db: D1Db = getD1Db()): Promise<void> {
+function ensureErrorTables(db: D1Db = getD1Db()): Promise<void> {
   ready ??= ensureTables(db).catch((e) => {
     ready = undefined;
     throw e;

@@ -202,7 +202,7 @@ export function spendSummary(
   };
 }
 
-export const MAX_ADMIN_LIMIT = 1000;
+const MAX_ADMIN_LIMIT = 1000;
 
 export type LimitEdit = { ok: true; email: string; limit: number } | { ok: false; error: string };
 

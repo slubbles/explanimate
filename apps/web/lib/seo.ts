@@ -10,7 +10,7 @@ import type { Metadata, MetadataRoute } from "next";
 export const SITE_URL = "https://explanimate.co";
 
 /** The share image: a 1200x630 PNG in public/, drawn by apps/web/scripts/gen-og-image.mjs. */
-export const OG_IMAGE = {
+const OG_IMAGE = {
   url: "/og.png",
   width: 1200,
   height: 630,

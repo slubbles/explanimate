@@ -41,7 +41,7 @@ function interp(keys, t, dflt) {
 }
 
 /** "#rgb" / "#rrggbb" with an alpha, for gradients that fade a colour to clear (CSS "transparent" does the same). */
-export function withAlpha(color, a) {
+function withAlpha(color, a) {
   const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color.trim());
   if (!m) return `rgba(0,0,0,${a})`;
   const h =

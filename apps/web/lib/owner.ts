@@ -7,7 +7,7 @@
 import crypto from "node:crypto";
 import { authEnabled, sessionUser } from "./auth";
 
-export const OWNER_COOKIE = "ex_owner";
+const OWNER_COOKIE = "ex_owner";
 const TOKEN = /^[a-f0-9]{32}$/;
 const MAX_AGE_S = 60 * 60 * 24 * 30;
 

@@ -138,7 +138,7 @@ class LocalAdapter extends SqliteAdapter {
   }
 }
 
-export class LocalDialect implements Dialect {
+class LocalDialect implements Dialect {
   private db: DatabaseSync;
   constructor(file: string) {
     this.db = openDb(file);
